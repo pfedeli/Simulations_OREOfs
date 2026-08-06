@@ -9,7 +9,7 @@
 /crystal/setCrystalAngleX 0.e-6             #rad (default 0.)
 /crystal/setCrystalAngleY 0.e-6             #rad (default 0.)
 /crystal/setDetectorVersion 1               #0 for single crystal #1 is oreo
-/crystal/setOCeffects false                  scp ######(de)comment coherentpairproduction!!!
+/crystal/setOCeffects false                 ######(de)comment coherentpairproduction!!!
 /run/initialize
 /run/setfilenamesave output/rnd.root
 
