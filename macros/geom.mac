@@ -1,0 +1,12 @@
+#This macro, which includes all the commands to set the geometry reported
+#also in rum.mac, is automatically called when running ch5 in interactive mode. 
+#It can therefore be used to check the correctness of the set parameters.
+
+#/random/setSeeds 19577793 424238335        #uncomment this to have reproducibility
+
+/crystal/setCrystalAngleX 0.e-6             #rad (default 0.)
+/crystal/setCrystalAngleY 0.e-6             #rad (default 0.)
+/crystal/setOCeffects false                #Deactivate Orientetional Coherent (OC) effects
+/crystal/setDetectorVersion 1
+
+#/crystal/setVirtualDetectorSize 40 40 0.001 cm
