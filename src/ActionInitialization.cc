@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// gpaterno, October 2025
+// gpaterno, August 2026
 //
 /// \file ActionInitialization.cc
 /// \brief Implementation of the ActionInitialization class

@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// gpaterno, October 2025
+// gpaterno, August 2026
 //
 /// \file DetectorConstructionMessenger.hh
 /// \brief Description of the DetectorConstruction messenger class
@@ -61,23 +61,22 @@ public:
 private:
     DetectorConstruction* fDetector{nullptr};
         
-    G4UIdirectory* fCmdDir{nullptr};   
+    G4UIdirectory* fCmdDir{nullptr};
+     
     G4UIcmdWithAString* fCrystalMaterialCmd{nullptr};
+    G4UIcmdWith3VectorAndUnit* fCrystalSizeCmd{nullptr};
     G4UIcmdWithAString* fCrystalLatticeCmd{nullptr};
     G4UIcmdWithADouble* fCrystalAngleXCmd{nullptr};
     G4UIcmdWithADouble* fCrystalAngleYCmd{nullptr};
     G4UIcmdWithABool* fRadModelCmd{nullptr};
     G4UIcmdWithABool* fOCeffectsCmd{nullptr};
     G4UIcmdWithAString* fPotentialPathCmd{nullptr};
-
-    
-    G4UIcmdWithADoubleAndUnit* fFieldValueCmd{nullptr};
-    G4UIcmdWithADoubleAndUnit* fFieldRegionLengthCmd{nullptr};
+    G4UIcmdWithAnInteger* fDetectorVersion{nullptr};
+    G4UIcmdWithADoubleAndUnit* fGapCmd{nullptr};
+    G4UIcmdWithAnInteger* fnCrystalsX{nullptr};
+    G4UIcmdWithAnInteger* fnCrystalsY{nullptr};
     
     G4UIcmdWith3VectorAndUnit* fVirtualDetectorSizeCmd{nullptr}; 
-    
-    G4UIcmdWithABool* fScoringCrystalExitCmd{nullptr};
-    G4UIcmdWithAnInteger* fDetectorVersion{nullptr};
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// gpaterno, October 2025
+// gpaterno, August 2026
 //
 /// \file SteppingAction.cc
 /// \brief Implementation of the SteppingAction class
@@ -32,7 +32,6 @@
 
 #include "SteppingAction.hh"
 #include "EventAction.hh"
-#include "DetectorConstruction.hh"
 
 #include "G4AnalysisManager.hh"
 #include "G4Step.hh"
@@ -51,19 +50,6 @@ SteppingAction::SteppingAction(EventAction *eventAction) : fEventAction(eventAct
 
 void SteppingAction::UserSteppingAction(const G4Step *step)
 {
-    // get an instance of the DetectorConstruction and retrieve some settings
-    const DetectorConstruction *detectorConstruction = static_cast<const DetectorConstruction *>(G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-
-    // get the Sensitive Volumes
-    fCrystalVolume = detectorConstruction->GetCrystalVolume();
-    if (fScoringVolume.size() == 0)
-        fScoringVolume = detectorConstruction->GetScoringVolume(); // Spheres of Converter
-    G4int NScoringVolumes = fScoringVolume.size();
-
-    // get if I want to score the features of particles
-    // exiting the radiator and /or the target (27/09/2024)
-    G4bool scoreCrystalExit = detectorConstruction->GetScoringCrystalExit();
-
     // get pre and post step points
     G4StepPoint *preStepPoint = step->GetPreStepPoint();
     G4StepPoint *postStepPoint = step->GetPostStepPoint();
@@ -93,42 +79,18 @@ void SteppingAction::UserSteppingAction(const G4Step *step)
     // instantiating The Analysis Manager
     G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
 
-    // declaration of variables useful for the scoring
-    // of the features of the particles exiting the crystals
-    // G4ThreeVector postStepPos;
-    G4ThreeVector postStepMom;
-    G4double postStepTime;
-    G4LogicalVolume *volumeNext;
 
-    // score the Edep in the Crystal (the Radiator)
-    //G4cout << "volume is " << volumeName << " !=? " << fCrystalVolume->GetName() << G4endl;
-    if (volume == fCrystalVolume)
+    // score the Edep in the Oreo crystals
+    if (volumeName.find("Crystal") != std::string::npos)
     {
+        //G4cout << "volume is " << volumeName << G4endl;
+        //G4cout << "copy number = " << crystalID << G4endl;
         G4int crystalID = preStepPoint->GetTouchableHandle()->GetCopyNumber();
-        fEventAction->AddEdepRad(edep, crystalID);
-        //G4cout << "edep is: " << edep << G4endl;
-        // score the features of the particle exiting the volume
-        postStepMom = postStepPoint->GetMomentum();
-        postStepTime = postStepPoint->GetGlobalTime();
-        volumeNext =
-            postStepPoint->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
-        // G4cout << "volume: " << volumeName << ", next volume: " << volumeNextName << G4endl;
-        if (scoreCrystalExit && volumeNext && volume != volumeNext)
-        {
-            analysisManager->FillNtupleSColumn(4, 0, partName);
-            analysisManager->FillNtupleDColumn(4, 1, postStepPos.x() / CLHEP::mm);
-            analysisManager->FillNtupleDColumn(4, 2, postStepPos.y() / CLHEP::mm);
-            analysisManager->FillNtupleDColumn(4, 3, postStepPos.z() / CLHEP::mm);
-            analysisManager->FillNtupleDColumn(4, 4, postStepMom.x() / CLHEP::MeV);
-            analysisManager->FillNtupleDColumn(4, 5, postStepMom.y() / CLHEP::MeV);
-            analysisManager->FillNtupleDColumn(4, 6, postStepMom.z() / CLHEP::MeV);
-            analysisManager->FillNtupleDColumn(4, 7, postStepTime / CLHEP::ns);
-            analysisManager->FillNtupleIColumn(4, 8, eventID);
-            analysisManager->FillNtupleIColumn(4, 9, trackID);
-            analysisManager->AddNtupleRow(4);
-        }
+        fEventAction->AddEdep(edep, crystalID);
+        //G4cout << "edep = " << edep << G4endl;
     }
 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+

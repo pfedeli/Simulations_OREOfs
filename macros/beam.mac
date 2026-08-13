@@ -1,5 +1,4 @@
-#Set of GPS commands that can be used to define a beam impinging on
-#the crystal (provided that /gun/UseGPS true). 
+#Set of GPS commands that can be used to define a beam impinging on the crystal
 #this macro can be also called from a dedicated menu of the GUI.
 
 #beam
@@ -16,4 +15,4 @@
 /gps/ang/sigma_x 1.E-6 rad
 /gps/ang/sigma_y 1.E-6 rad
 #energy distribution
-/gps/ene/mono 2.86 GeV
+/gps/ene/mono 10 GeV

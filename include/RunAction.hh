@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// gpaterno, October 2025
+// gpaterno, August 2026
 //
 /// \file RunAction.hh
 /// \brief Definition of the RunAction class
@@ -41,8 +41,6 @@
 #include <fstream>
 #include "G4AnalysisManager.hh"
 
-class G4Run;
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 /// Run action class. Used to define the scoring ntuple and write the results.
@@ -55,7 +53,6 @@ public:
 
     void BeginOfRunAction(const G4Run*) override;
     void   EndOfRunAction(const G4Run*) override;
-    G4Run* GenerateRun() override;  
 
     void SetFileName(G4String);
     

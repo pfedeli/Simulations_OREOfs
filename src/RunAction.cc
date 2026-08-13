@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// gpaterno, October 2025
+// gpaterno, August 2026
 //
 /// \file RunAction.cc
 /// \brief Implementation of the RunAction class
@@ -33,7 +33,6 @@
 #include "RunAction.hh"
 #include "RunActionMessenger.hh"
 #include "DetectorConstruction.hh"
-#include "Run.hh"
 
 #include "G4AnalysisManager.hh"
 #include "G4RunManager.hh"
@@ -77,33 +76,27 @@ RunAction::RunAction():G4UserRunAction()
     fAnalysisManager->CreateNtupleDColumn("px");
     fAnalysisManager->CreateNtupleDColumn("py");
     fAnalysisManager->CreateNtupleDColumn("pz");
+    fAnalysisManager->CreateNtupleDColumn("E");
     fAnalysisManager->CreateNtupleDColumn("t");
+    fAnalysisManager->CreateNtupleIColumn("parentID");
     fAnalysisManager->CreateNtupleIColumn("eventID");
     fAnalysisManager->FinishNtuple();
         
     //Creating the ntuple to score Edep in the Radiatior
     fAnalysisManager->CreateNtuple("t","OREO");
-
-    fAnalysisManager->CreateNtupleDColumn("c0");
-    fAnalysisManager->CreateNtupleDColumn("c1");
-    fAnalysisManager->CreateNtupleDColumn("c2");
-    fAnalysisManager->CreateNtupleDColumn("c3");
-    fAnalysisManager->CreateNtupleDColumn("c4");
-    fAnalysisManager->CreateNtupleDColumn("c5");
-    fAnalysisManager->CreateNtupleDColumn("c6");
-    fAnalysisManager->CreateNtupleDColumn("c7");
-    fAnalysisManager->CreateNtupleDColumn("c8");    
+    std::stringstream crystalID;
+    G4String columnName;
+    G4int Ncrystals = 49; //It must be equal to NCrystalMax defined in DetectorConstruction.hh
+    for (int k = 0; k < Ncrystals; k++) {
+        crystalID << k;
+        columnName = "c" + crystalID.str();
+        fAnalysisManager->CreateNtupleDColumn(columnName);
+        crystalID.str("");
+    }
     fAnalysisManager->CreateNtupleDColumn("etot");
     fAnalysisManager->CreateNtupleIColumn("eventID");
-
     fAnalysisManager->FinishNtuple();
-    
-
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-G4Run* RunAction::GenerateRun() {return new Run;}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
@@ -154,37 +147,14 @@ void RunAction::EndOfRunAction(const G4Run* run)
     //Get the number of events
     G4int nofEvents = run->GetNumberOfEvent();
     if (nofEvents == 0) return;
-                      
-    //Get results from the Edep (in the Radiator Crystal) scorer
-    const Run* aRun = static_cast<const Run*>(run);
-    G4double Edep  = aRun->GetEdep();    
-    G4double Edep2 = aRun->GetEdep2();     
-    G4int nGoodEvents = aRun->GoodEvents();
-    G4double stdEdep = std::sqrt(Edep2 - Edep*Edep/nGoodEvents); 
        
-    //Print and write results to a text file
-    if (IsMaster()) {    
-        //detector construction instance    
-        const DetectorConstruction* detectorConstruction = 
-            static_cast<const DetectorConstruction*>(G4RunManager::GetRunManager()
-                ->GetUserDetectorConstruction());
-
-        G4String matName = 
-            detectorConstruction->GetCrystalVolume()->GetMaterial()->GetName();            
-        
-        //set the significant digits to print
-        G4cout.precision(8);
-      
+    //Print
+    if (IsMaster()) {      
         //print the results on screen
         G4cout << G4endl
         << "--------------------End of Global Run-----------------------"
         << G4endl
-        << " The run had " << nofEvents << " events";
-        G4cout << G4endl
-        << " Edep in " << "the Radiator Crystal" << " (made of "
-        << matName << "): " << Edep/MeV
-        << " +/- " << stdEdep/MeV << " MeV" << G4endl 
-        << "------------------------------------------------------------" 
+        << " The run had " << nofEvents << " events"
         << G4endl << G4endl;           
     }            
                    

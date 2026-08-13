@@ -58,10 +58,6 @@ public:
 
 private:
     EventAction* fEventAction{nullptr};
-    
-    std::vector<G4LogicalVolume*> fScoringVolume;
-    G4LogicalVolume* fCrystalVolume{nullptr};
-    G4LogicalVolume* fConverterVolume{nullptr}; 
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

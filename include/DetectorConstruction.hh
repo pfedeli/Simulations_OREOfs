@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// gpaterno, October 2025
+// gpaterno, August 2026
 //
 /// \file DetectorConstruction.hh
 /// \brief Description of the DetectorConstruction class
@@ -45,7 +45,7 @@
 #include "DetectorConstructionMessenger.hh"
 #include "G4ChannelingFastSimModel.hh"
 
-#define NSpheresMax 10000
+#define NCrystalMax 49
 
 class G4VPhysicalVolume;
 class G4LogicalVolume;
@@ -64,10 +64,10 @@ public:
     void ConstructSDandField() override;
     
     //method to get the scoring volumes
-    std::vector<G4LogicalVolume*> GetScoringVolume() const {
-        return fScoringVolume;}        
-       
+    std::vector<G4LogicalVolume*> GetScoringVolume() const {return fScoringVolume;}
+    
     //methods to set the Crystal (Radiator) features
+    void SetCrystalMaterial(G4String val) {fCrystalMaterialStr = val;}
     void SetCrystalSize(G4ThreeVector val) {fCrystalSize = val;}
     void SetCrystalLattice(G4String val) {fLattice = val;}
     void SetCrystalAngleX(G4double val) {fAngleX = val;}
@@ -76,18 +76,16 @@ public:
     void SetRadiationModel(G4bool val) {fActivateRadiationModel = val;}
     void SetOCeffects(G4bool val) {fActivateOCeffects = val;}
     G4bool GetOCeffects() const {return fActivateOCeffects;}
-    G4LogicalVolume* GetCrystalVolume() const {return fCrystalLogic;}
     void SetPotentialPath(const G4String path){fPotentialPath = path;}
     void SetDetectorVersion(const G4int version){fDetectorVersion = version;}
+    void SetCrystalGap(const G4double val){fCrystalGap = val;}
+    void SetnCrystalsX(const G4int val){nCrystalsX = val;}
+    void SetnCrystalsY(const G4int val){nCrystalsY = val;}
        
     //methods to set/Get the Virtual Detector features
     void SetVirtualDetectorSize(G4ThreeVector val) {fVirtualDetectorSize = val;}
     std::vector<G4ThreeVector> GetVirtualDetectorPositionVector() const {
         return fVirtualDetectorPositionVector;}
-       
-    //methods to set and get ScoreCrystalExit (27/09/2024)
-    void SetScoringCrystalExit(G4bool bval) {fScoringCrystalExit = bval;} 
-    G4bool GetScoringCrystalExit() const {return fScoringCrystalExit;}
         
 protected:
   std::vector<G4LogicalVolume*> fScoringVolume; //for spheres only
@@ -96,27 +94,26 @@ private:
     DetectorConstructionMessenger* fMessenger;  
             
     G4Region* fCrystalRegion{nullptr};
-    G4LogicalVolume* fCrystalLogic{nullptr};
+    //G4LogicalVolume* fCrystalLogic{nullptr};
+    G4LogicalVolume* fCrystalLogic[NCrystalMax];
     G4Material* fCrystalMaterial{nullptr};
+    G4String fCrystalMaterialStr = "";
     G4ThreeVector fCrystalSize = G4ThreeVector(25.*mm, 25.*mm, 45.*mm);
-    G4String fLattice = "<111>";  
+    G4String fLattice = "<111>";
     G4double fAngleX = 0.e-6; //rad
     G4double fAngleY = 0.e-6; //rad
     G4double fCrystalZ = 0.;
     G4bool fActivateRadiationModel = true;
     G4bool fActivateOCeffects = true;
-    //G4String fPotentialPath = "/Users/pierluigifedeli/Simulations/Simulations_code/OREOfs/potentialPath/";
-    G4String fPotentialPath = "/Users/pierluigifedeli/Simulations/Simulations_code/OREOfs/potentialPath/";
+    G4String fPotentialPath = "potentialPath/";
     G4int fDetectorVersion = 0;
-    G4double crystalGap = 0.1 *mm;
+    G4double fCrystalGap = 0.1*mm;
+    G4int nCrystalsX = 3;
+    G4int nCrystalsY = 3;
 
     G4ThreeVector fVirtualDetectorSize = G4ThreeVector(40.*cm, 40.*cm, 0.01*mm);
     std::vector<G4ThreeVector> fVirtualDetectorPositionVector;
     G4LogicalVolume* fVirtualDetectorLogic0{nullptr};
-    G4LogicalVolume* fVirtualDetectorLogic1{nullptr};
-    G4LogicalVolume* fVirtualDetectorLogic2{nullptr};
-            
-    G4bool fScoringCrystalExit = false;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

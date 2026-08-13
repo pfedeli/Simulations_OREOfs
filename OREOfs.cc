@@ -31,6 +31,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 #include "DetectorConstruction.hh"
+#include "PhysicsList.hh"
 #include "ActionInitialization.hh"
 
 #include "G4RunManagerFactory.hh"
@@ -42,8 +43,6 @@
 #include "G4UIExecutive.hh"
 
 #include "FTFP_BERT.hh"
-#include "G4FastSimulationPhysics.hh"
-#include "G4CoherentPairProductionPhysics.hh"
 
 #include "Randomize.hh"
 #include <ctime>
@@ -96,30 +95,9 @@ int main(int argc,char** argv)
     //Set the Geometry
     runManager->SetUserInitialization(new DetectorConstruction);
 
-    //Physics list
-    G4VModularPhysicsList* physicsList = new FTFP_BERT;
-    // -- Create helper tool used to activate the fast simulation
-    G4FastSimulationPhysics* fastSimulationPhysics = new G4FastSimulationPhysics();
-    fastSimulationPhysics->BeVerbose();
-    // -- activation of fast simulation for particles having fast simulation models
-    // -- attached in the mass geometry
-    fastSimulationPhysics->ActivateFastSimulation("e-");
-    fastSimulationPhysics->ActivateFastSimulation("e+");
-    fastSimulationPhysics->ActivateFastSimulation("pi-");
-    fastSimulationPhysics->ActivateFastSimulation("pi+");
-    fastSimulationPhysics->ActivateFastSimulation("mu-");
-    fastSimulationPhysics->ActivateFastSimulation("mu+");
-    fastSimulationPhysics->ActivateFastSimulation("proton");
-    fastSimulationPhysics->ActivateFastSimulation("anti_proton");
-    fastSimulationPhysics->ActivateFastSimulation("GenericIon");
-    // -- Attach the fast simulation physics constructor to the physics list
-    physicsList->RegisterPhysics(fastSimulationPhysics);
-    //Coherent pair production model
-    // G4CoherentPairProductionPhysics* coherentPairProductionPhysics =
-    //     new G4CoherentPairProductionPhysics();
-    // physicsList->RegisterPhysics(coherentPairProductionPhysics);
-    
-    physicsList->SetVerboseLevel(1);
+    //Set the Physics
+    G4int physVerb = 0;
+    PhysicsList* physicsList = new PhysicsList(physVerb);
     runManager->SetUserInitialization(physicsList);
 
     //Set user action classes
@@ -139,7 +117,7 @@ int main(int argc,char** argv)
         G4VisManager* visManager = new G4VisExecutive;
         visManager->Initialize();
 
-        //Define UI session for interactive mode        
+        //Define UI session for interactive mode
         G4UIExecutive* ui = new G4UIExecutive(argc,argv);
         UImanager->ApplyCommand("/control/execute macros/init_vis.mac");
         if (ui->IsGUI()) UImanager->ApplyCommand("/control/execute macros/gui.mac");

@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// gpaterno, October 2025
+// gpaterno, August 2026
 //
 /// \file EventAction.hh
 /// \brief Definition of the EventAction class
@@ -40,7 +40,6 @@
 #include <fstream>
 #include <map>
 
-#include "Run.hh"
 #include "G4RunManager.hh"
 
 class RunAction;
@@ -67,22 +66,15 @@ public:
         return G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
     }
     
-    void AddEdepRad(G4double val, G4int cryID) {fEdepRad[cryID] += val;}
-    void AddEdepConv(G4double val) {fEdepConv += val;}
-    
-    void AddEdepInSpheres(G4int, G4double);
+    void AddEdep(G4double val, G4int cryID) {fEdep[cryID] += val;}
 
 private:
     G4int fSensitiveDetector_ID = -1;
     G4int fVerboseLevel = 0;
     
-    static const G4int fNCrystals = 9;
-    G4double fEdepRad[fNCrystals] = {0.};
-    G4double fEtot =0.;
-    G4double fEdepConv = 0.;
-    
-    G4int fNSpheres = 0.;
-    std::map<G4int,G4double> fEdepSpheres;
+    static const G4int fNCrystals = 49; //It must be equal to NCrystalMax defined in DetectorConstruction.hh
+    G4double fEdep[fNCrystals];
+    G4double fEtot = 0.;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

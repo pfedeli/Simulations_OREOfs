@@ -23,57 +23,51 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// gpaterno, October 2025
+/// \file PhysicsList.hh
+/// \brief Definition of the PhysicsList class
 //
-/// \file PrimaryGeneratorActionMessenger.hh
-/// \brief Description of the PrimaryGeneratorActionMessenger class
+// gpaterno, August 2026
 //
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef PrimaryGeneratorActionMessenger_h
-#define PrimaryGeneratorActionMessenger_h 1
+#ifndef PhysicsList_h
+#define PhysicsList_h 1
 
-#include "G4UImessenger.hh"
-#include "globals.hh"
+#include "G4VUserPhysicsList.hh"
+#include "G4VModularPhysicsList.hh"
 
-class PrimaryGeneratorAction;
-class G4UIcmdWithABool;
-class G4UIcmdWithAString;
-class G4UIcmdWithADoubleAndUnit;
-class G4UIcmdWithADouble;
+class G4VPhysicsConstructor;
+class G4GenericMessenger;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-/// messenger for PrimaryGenerator class.
+/// PhysicsList action class with a defualt EM physics and methods/commands to
+/// activate Strong Field effects in Oriented Crystals.
 
-class PrimaryGeneratorActionMessenger: public G4UImessenger
+class PhysicsList: public G4VUserPhysicsList
 {
 public:
-    PrimaryGeneratorActionMessenger(PrimaryGeneratorAction*);
-    ~PrimaryGeneratorActionMessenger() override;
+    PhysicsList(G4int verb = 0);
+    ~PhysicsList() override;
+
+    void ConstructParticle() override;
+    void ConstructProcess() override;
+    void SetCuts() override;
+
+    //custom methods
+    void ActivateOCprocessesWithFSmodel();
+    void ActivateCoherentPairProduction();
+
+private:
+    PhysicsList & operator = (const PhysicsList &right);
+    PhysicsList(const PhysicsList&);
+ 
+    G4VModularPhysicsList* fDefaultPhysicsList{nullptr};
+
+    G4GenericMessenger* fMessenger{nullptr};
+    void DefineCommands();
     
-    void SetNewValue(G4UIcommand*, G4String) override;
-    
-private:   
-    PrimaryGeneratorAction* fPrimaryGeneratorAction{nullptr};
-    
-    G4UIcmdWithABool* fUseGPSCmd{nullptr};
-    
-    G4UIcmdWithAString* fPrimaryTypeCmd{nullptr}; 
-    G4UIcmdWithADoubleAndUnit* fPrimaryEnergyCmd{nullptr}; 
-    G4UIcmdWithADouble* fPrimaryRelSigmaEnergyCmd{nullptr}; 
-    G4UIcmdWithADoubleAndUnit* fPrimaryXCmd{nullptr};  
-    G4UIcmdWithADoubleAndUnit* fPrimaryYCmd{nullptr};
-    G4UIcmdWithADoubleAndUnit* fPrimaryZCmd{nullptr};
-    G4UIcmdWithADoubleAndUnit* fPrimaryTCmd{nullptr};
-    G4UIcmdWithADoubleAndUnit* fPrimaryXpCmd{nullptr};
-    G4UIcmdWithADoubleAndUnit* fPrimaryYpCmd{nullptr};  
-    G4UIcmdWithADoubleAndUnit* fPrimarySigmaXCmd{nullptr}; 
-    G4UIcmdWithADoubleAndUnit* fPrimarySigmaYCmd{nullptr}; 
-    G4UIcmdWithADoubleAndUnit* fPrimarySigmaZCmd{nullptr};
-    G4UIcmdWithADoubleAndUnit* fPrimarySigmaTCmd{nullptr}; 
-    G4UIcmdWithADoubleAndUnit* fPrimarySigmaXpCmd{nullptr}; 
-    G4UIcmdWithADoubleAndUnit* fPrimarySigmaYpCmd{nullptr};
+    G4bool fCoherentPairProduction = false;
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

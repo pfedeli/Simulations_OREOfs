@@ -50,6 +50,17 @@ foreach(_file ${macros})
 	)
 endforeach()
 
+set(my_SCRIPTS
+  execute.sh
+)
+foreach(_script ${my_SCRIPTS})
+  configure_file(
+    ${PROJECT_SOURCE_DIR}/${_script}
+    ${PROJECT_BINARY_DIR}/${_script}
+    COPYONLY
+    )
+endforeach()
+
 #----------------------------------------------------------------------------
 # For internal Geant4 use - but has no effect if you build this
 # example standalone
@@ -65,4 +76,9 @@ install(TARGETS OREOfs DESTINATION bin)
 # Create directiories in the binary path
 
 file(MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/output)
+#----------------------------------------------------------------------------
+
+# Copy directiories in the binary path
+file(COPY potentialPath DESTINATION ${PROJECT_BINARY_DIR})
+#----------------------------------------------------------------------------
 

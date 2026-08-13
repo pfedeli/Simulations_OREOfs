@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-// gpaterno, October 2025
+// gpaterno, August 2026
 //
 /// \file EventAction.cc
 /// \brief Implementation of the EventAction class
@@ -33,7 +33,6 @@
 #include "EventAction.hh"
 #include "RunAction.hh"
 #include "SensitiveDetectorHit.hh"
-#include "DetectorConstruction.hh"
 
 #include "G4RunManager.hh"
 #include "G4Event.hh"
@@ -53,34 +52,18 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 EventAction::EventAction()
-{
-    // An instance of the DetectorConstruction
-    const DetectorConstruction *detectorConstruction =
-        static_cast<const DetectorConstruction *>(G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-}
+{}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void EventAction::BeginOfEventAction(const G4Event *)
 {
-    // reset Edep in the Radiator and Converter Crystals
+    // reset Edep in the Crystals
     for (G4int i = 0; i < fNCrystals; i++)
     {
-        fEdepRad[i] = 0.;
+        fEdep[i] = 0.;
     }
     fEtot = 0.;
-    // reset the Edep map in the Spheres (scored through SteppingAction)
-    if (fVerboseLevel > 0)
-    {
-        G4int eventID = GetEventID();
-        G4cout << "EventAction::BeginOfEventAction(), "
-               << "EventID: " << eventID << G4endl;
-    }
-
-    for (int i = 0; i < fNSpheres; i++)
-    {
-        fEdepSpheres[i] = 0.;
-    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -130,11 +113,13 @@ void EventAction::EndOfEventAction(const G4Event *aEvent)
             analysisManager->FillNtupleSColumn(0, 1, aHit->GetParticle());
             analysisManager->FillNtupleDColumn(0, 2, aHit->GetPos().x() / CLHEP::mm);
             analysisManager->FillNtupleDColumn(0, 3, aHit->GetPos().y() / CLHEP::mm);
-            analysisManager->FillNtupleDColumn(0, 4, aHit->GetMom().x() / CLHEP::MeV);
-            analysisManager->FillNtupleDColumn(0, 5, aHit->GetMom().y() / CLHEP::MeV);
-            analysisManager->FillNtupleDColumn(0, 6, aHit->GetMom().z() / CLHEP::MeV);
-            analysisManager->FillNtupleDColumn(0, 7, aHit->GetTime() / CLHEP::ns);
-            analysisManager->FillNtupleIColumn(0, 8, eventID);
+            analysisManager->FillNtupleDColumn(0, 4, aHit->GetMom().x() / CLHEP::GeV);
+            analysisManager->FillNtupleDColumn(0, 5, aHit->GetMom().y() / CLHEP::GeV);
+            analysisManager->FillNtupleDColumn(0, 6, aHit->GetMom().z() / CLHEP::GeV);
+            analysisManager->FillNtupleDColumn(0, 7, aHit->GetEnergy() / CLHEP::GeV);
+            analysisManager->FillNtupleDColumn(0, 8, aHit->GetTime() / CLHEP::ns);
+            analysisManager->FillNtupleIColumn(0, 9, aHit->GetTrackIDP());
+            analysisManager->FillNtupleIColumn(0, 10, eventID);
             analysisManager->AddNtupleRow(0);
         }
     }
@@ -142,10 +127,10 @@ void EventAction::EndOfEventAction(const G4Event *aEvent)
     // filling the Edep (in the OREO Crystal) ntuple
     for (G4int icry = 0; icry < fNCrystals; icry++)
     {
-        if (fEdepRad[icry] > 0)
+        if (fEdep[icry] > 0)
         {
-            analysisManager->FillNtupleDColumn(1, icry, fEdepRad[icry] / MeV);
-            fEtot += fEdepRad[icry] / MeV;
+            analysisManager->FillNtupleDColumn(1, icry, fEdep[icry]/GeV);
+            fEtot += fEdep[icry]/GeV;
         }
     }    
     analysisManager->FillNtupleDColumn(1, fNCrystals, fEtot);
@@ -155,18 +140,3 @@ void EventAction::EndOfEventAction(const G4Event *aEvent)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-void EventAction::AddEdepInSpheres(G4int volID, G4double edep)
-{
-    G4double temp = fEdepSpheres.find(volID)->second;
-    fEdepSpheres[volID] = temp + edep;
-
-    if (fVerboseLevel > 1)
-    {
-        G4int eventID = GetEventID();
-        G4cout << "Event: " << eventID
-               << ", Edep[" << volID << "]: "
-               << edep / MeV << " MeV" << G4endl;
-    }
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
