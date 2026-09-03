@@ -358,8 +358,8 @@ void DetectorConstruction::ConstructSDandField()
             ChannelingModel->Input(fCrystalLogic[0]->GetMaterial(), fLattice, fPotentialPath);
             G4cout << "fPotentialPath: " << fPotentialPath << G4endl;
         }
-        G4double fParticleLEth = 10. * GeV; // deafult 200.*MeV (5.*GeV -> much faster)
-        G4double fLindhardAngles = 10;      // default 100
+        G4double fParticleLEth = 200. * MeV; // deafult 200.*MeV (5.*GeV -> much faster)
+        G4double fLindhardAngles = 100;      // default 100
         ChannelingModel->SetLowKineticEnergyLimit(fParticleLEth, "e-");
         ChannelingModel->SetLowKineticEnergyLimit(fParticleLEth, "e+");
         ChannelingModel->SetLindhardAngleNumberHighLimit(fLindhardAngles, "e-");
