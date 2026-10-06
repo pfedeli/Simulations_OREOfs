@@ -1,17 +1,17 @@
-/run/numberOfThreads 2
+/run/numberOfThreads 40
 
-/random/setSeeds 19577793 424238335        #uncomment this to have reproducibility
+#/random/setSeeds 19577793 424238335        #uncomment this to have reproducibility
 
 #geometry
 /crystal/setDetectorVersion 1               #0 for single crystal, 1 is oreo
-/crystal/nCrystalsX 1                       #max 7
-/crystal/nCrystalsY 1
-/crystal/setCrystalMaterial PWO             #W, PWO
+/crystal/nCrystalsX 3                       #max 7
+/crystal/nCrystalsY 3
+/crystal/setCrystalMaterial W             #W, PWO
 /crystal/setCrystalSize 25 25 45 mm
-/crystal/setCrystalLattice <100>            #planes (e.g. (111)) or axes (e.g. <111>)
+/crystal/setCrystalLattice <111>            #planes (e.g. (111)) or axes (e.g. <111>)
 /crystal/setCrystalAngleX 0.e-6             #rad (default 0.)
 /crystal/setCrystalAngleY 0.e-6             #rad (default 0.)
-/crystal/setOCeffects true                  #default is true
+#/crystal/setOCeffects false                  #default is true
 /crystal/setChannelingDataPath ../potentialPath/
 
 #/crystal/setVirtualDetectorSize 40 40 0.001 cm
@@ -19,7 +19,7 @@
 #physics and run options
 /phys/setCoherentPairProduction
 
-/run/setfilenamesave output/test.root
+/run/setfilenamesave output/ax.root
 
 /run/initialize
 
@@ -30,16 +30,16 @@
 #beam
 /gps/particle e-
 #coordinate distribution
-/gps/pos/centre 0 0 300 mm
+/gps/pos/centre 0 0 -3000 mm
 /gps/pos/type Beam
 /gps/pos/sigma_x 1.0 mm
 /gps/pos/sigma_y 1.0 mm
 #angular distribution
 /gps/ang/type beam2d
 /gps/ang/rot1 1  0  0
-/gps/ang/rot2 0 1  0
-/gps/ang/sigma_x 1.E-6 rad
-/gps/ang/sigma_y 1.E-6 rad
+/gps/ang/rot2 0 -1  0
+/gps/ang/sigma_x 100.E-6 rad
+/gps/ang/sigma_y 100.E-6 rad
 #energy distribution
 /gps/ene/mono 50 GeV
 
@@ -54,9 +54,8 @@
 
 #statistics
 /run/printProgress 10
-/run/beamOn 10
+/run/beamOn 100
 
 #write boxMesh scorer reults to file
 #/score/dumpQuantityToFile boxMesh1 Edep output/Edep_axial_50GeV.txt
 #/score/dumpQuantityToFile boxMesh1 Edep output/Edep_random_50GeV.txt
-
