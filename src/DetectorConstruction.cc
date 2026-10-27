@@ -101,6 +101,8 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
                                                      0,               // copy number
                                                      checkOverlaps);  // overlaps checking
 
+ 
+    
     // --------------- OREO  -------------------------
     // set visualization attributes
     G4VisAttributes *CrystalVisAttribute =
@@ -134,128 +136,128 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
     G4double tollfCrystalZ = 0. * mm;
 
     if (fDetectorVersion == 0)
-    {
-        G4cout << "Detector version 0 (default)" << G4endl;
-        //fCrystalMaterial = Tungsten;
-        //fCrystalSize = G4ThreeVector(25.*mm, 25.*mm, 25.*mm);
-        if (fAngleX != 0 || fAngleY != 0)
         {
-            tollfCrystalZ = 0.15 * mm;
-        }
-        fCrystalZ = -fCrystalSize.z() * 0.5 - tollfCrystalZ;
+            G4cout << "Detector version 0 (default)" << G4endl;
+            //fCrystalMaterial = Tungsten;
+            //fCrystalSize = G4ThreeVector(25.*mm, 25.*mm, 25.*mm);
+            if (fAngleX != 0 || fAngleY != 0)
+                {
+                    tollfCrystalZ = 0.15 * mm;
+                }
+            fCrystalZ = -fCrystalSize.z() * 0.5 - tollfCrystalZ;
 
-        // Crystal solid and logic volumes
-        G4Box *crystalSolid = new G4Box("Crystal",
-                                        fCrystalSize.x() * 0.5,
-                                        fCrystalSize.y() * 0.5,
-                                        fCrystalSize.z() * 0.5);
+            // Crystal solid and logic volumes
+            G4Box *crystalSolid = new G4Box("Crystal",
+                                            fCrystalSize.x() * 0.5,
+                                            fCrystalSize.y() * 0.5,
+                                            fCrystalSize.z() * 0.5);
 
-        fCrystalLogic[0] = new G4LogicalVolume(crystalSolid,
-                                              fCrystalMaterial,
-                                              "Crystal");
+            fCrystalLogic[0] = new G4LogicalVolume(crystalSolid,
+                                                   fCrystalMaterial,
+                                                   "Crystal");
         
-        fCrystalLogic[0]->SetVisAttributes(CrystalVisAttribute);
-        fCrystalRegion->AddRootLogicalVolume(fCrystalLogic[0]);
-        fScoringVolume.push_back(fCrystalLogic[0]);
+            fCrystalLogic[0]->SetVisAttributes(CrystalVisAttribute);
+            fCrystalRegion->AddRootLogicalVolume(fCrystalLogic[0]);
+            fScoringVolume.push_back(fCrystalLogic[0]);
 
-        G4ThreeVector posCrystal = G4ThreeVector(0. * mm, 0. * mm, fCrystalZ);
+            G4ThreeVector posCrystal = G4ThreeVector(0. * mm, 0. * mm, fCrystalZ);
 
-        G4RotationMatrix *crystalRotationMatrix = new G4RotationMatrix;
-        crystalRotationMatrix->rotateY(-fAngleX);
-        crystalRotationMatrix->rotateX(-fAngleY);
+            G4RotationMatrix *crystalRotationMatrix = new G4RotationMatrix;
+            crystalRotationMatrix->rotateY(-fAngleX);
+            crystalRotationMatrix->rotateX(-fAngleY);
 
-        // Crystal placement
-        new G4PVPlacement(crystalRotationMatrix,
-                          posCrystal,
-                          fCrystalLogic[0],
-                          "Crystal",
-                          logicWorld,
-                          false,
-                          0,
-                          checkOverlaps);
-    }
+            // Crystal placement
+            new G4PVPlacement(crystalRotationMatrix,
+                              posCrystal,
+                              fCrystalLogic[0],
+                              "Crystal",
+                              logicWorld,
+                              false,
+                              0,
+                              checkOverlaps);
+        }
 
     else if (fDetectorVersion == 1)
-    {
-        G4cout << "Detector version 1 (OREO)" << G4endl;
-        //fCrystalMaterial = Tungsten;
-        //fCrystalMaterial = PWO;
-        //fLattice = "<111>";
-        //fCrystalSize = G4ThreeVector(25.*mm, 25.*mm, 45.*mm);
-        if (fAngleX != 0 || fAngleY != 0)
         {
-            tollfCrystalZ = 0.15 * mm;
-        }
-        fCrystalZ = -fCrystalSize.z() * 0.5 - tollfCrystalZ;
+            G4cout << "Detector version 1 (OREO)" << G4endl;
+            //fCrystalMaterial = Tungsten;
+            //fCrystalMaterial = PWO;
+            //fLattice = "<111>";
+            //fCrystalSize = G4ThreeVector(25.*mm, 25.*mm, 45.*mm);
+            if (fAngleX != 0 || fAngleY != 0)
+                {
+                    tollfCrystalZ = 0.15 * mm;
+                }
+            fCrystalZ = -fCrystalSize.z() * 0.5 - tollfCrystalZ;
 
-        //const G4int nCrystalsX = 3; //they are class members now
-        //const G4int nCrystalsY = 3;
-        G4double crystalPitchX = fCrystalSize.x() + fCrystalGap;
-        G4double crystalPitchY = fCrystalSize.y() + fCrystalGap;
+            //const G4int nCrystalsX = 3; //they are class members now
+            //const G4int nCrystalsY = 3;
+            G4double crystalPitchX = fCrystalSize.x() + fCrystalGap;
+            G4double crystalPitchY = fCrystalSize.y() + fCrystalGap;
 
-        G4Box *crystalSolid = new G4Box("Crystal",
-                                        fCrystalSize.x() * 0.5,
-                                        fCrystalSize.y() * 0.5,
-                                        fCrystalSize.z() * 0.5);
+            G4Box *crystalSolid = new G4Box("Crystal",
+                                            fCrystalSize.x() * 0.5,
+                                            fCrystalSize.y() * 0.5,
+                                            fCrystalSize.z() * 0.5);
 
-        //fCrystalLogic = new G4LogicalVolume(crystalSolid, fCrystalMaterial, "Crystal");
-        //fCrystalLogic->SetVisAttributes(CrystalVisAttribute);
+            //fCrystalLogic = new G4LogicalVolume(crystalSolid, fCrystalMaterial, "Crystal");
+            //fCrystalLogic->SetVisAttributes(CrystalVisAttribute);
 
-        std::stringstream crystalID;
-        G4String crystalName = "Crystal";
-        G4int copyNo = 0;
-        for (G4int ix = 0; ix < nCrystalsX; ix++)
-        {
-            for (G4int iy = 0; iy < nCrystalsY; iy++)
-            {
-                crystalID << copyNo;
-                //crystalName = "Crystal_" + crystalID.str();
+            std::stringstream crystalID;
+            G4String crystalName = "Crystal";
+            G4int copyNo = 0;
+            for (G4int ix = 0; ix < nCrystalsX; ix++)
+                {
+                    for (G4int iy = 0; iy < nCrystalsY; iy++)
+                        {
+                            crystalID << copyNo;
+                            //crystalName = "Crystal_" + crystalID.str();
             
-                fCrystalLogic[copyNo] = new G4LogicalVolume(crystalSolid, 
-                                                            fCrystalMaterial, 
-                                                            crystalName);
+                            fCrystalLogic[copyNo] = new G4LogicalVolume(crystalSolid, 
+                                                                        fCrystalMaterial, 
+                                                                        crystalName);
                 
-                fCrystalLogic[copyNo]->SetVisAttributes(CrystalVisAttribute);
-                fCrystalRegion->AddRootLogicalVolume(fCrystalLogic[copyNo]);
-                fScoringVolume.push_back(fCrystalLogic[copyNo]);                
+                            fCrystalLogic[copyNo]->SetVisAttributes(CrystalVisAttribute);
+                            fCrystalRegion->AddRootLogicalVolume(fCrystalLogic[copyNo]);
+                            fScoringVolume.push_back(fCrystalLogic[copyNo]);                
 
-                //G4double x = (ix - 1) * crystalPitchX; // -1,0,1 -> centrato
-                //G4double y = (iy - 1) * crystalPitchY;
-                G4double dx = 0;
-                G4double dy = 0;
-                if (nCrystalsX % 2 == 0) {dx = 0.5;}
-                if (nCrystalsY % 2 == 0) {dy = 0.5;}                  
-                G4double x = (ix-floor(nCrystalsX*0.5)+dx) * crystalPitchX;
-                G4double y = (iy-floor(nCrystalsY*0.5)+dy) * crystalPitchY;
+                            //G4double x = (ix - 1) * crystalPitchX; // -1,0,1 -> centrato
+                            //G4double y = (iy - 1) * crystalPitchY;
+                            G4double dx = 0;
+                            G4double dy = 0;
+                            if (nCrystalsX % 2 == 0) {dx = 0.5;}
+                            if (nCrystalsY % 2 == 0) {dy = 0.5;}                  
+                            G4double x = (ix-floor(nCrystalsX*0.5)+dx) * crystalPitchX;
+                            G4double y = (iy-floor(nCrystalsY*0.5)+dy) * crystalPitchY;
                 
-                G4ThreeVector posCrystal(x, y, fCrystalZ);
+                            G4ThreeVector posCrystal(x, y, fCrystalZ);
 
-                // rotazione: se tutti orientati allo stesso modo rispetto al fascio,
-                // basta clonare la stessa matrice per ognuno (è relativa al frame locale)
-                G4RotationMatrix *rot = new G4RotationMatrix;
-                rot->rotateY(-fAngleX);
-                rot->rotateX(-fAngleY);
+                            // rotazione: se tutti orientati allo stesso modo rispetto al fascio,
+                            // basta clonare la stessa matrice per ognuno (è relativa al frame locale)
+                            G4RotationMatrix *rot = new G4RotationMatrix;
+                            rot->rotateY(-fAngleX);
+                            rot->rotateX(-fAngleY);
 
-                new G4PVPlacement(rot,
-                                  posCrystal,
-                                  fCrystalLogic[copyNo],
-                                  crystalName,
-                                  logicWorld,
-                                  false,
-                                  copyNo,
-                                  checkOverlaps);
-                copyNo++;
-                crystalID.str("");
-            }
+                            new G4PVPlacement(rot,
+                                              posCrystal,
+                                              fCrystalLogic[copyNo],
+                                              crystalName,
+                                              logicWorld,
+                                              false,
+                                              copyNo,
+                                              checkOverlaps);
+                            copyNo++;
+                            crystalID.str("");
+                        }
+                }
         }
-    }
     else
-    {
-        G4ExceptionDescription msg;
-        msg << "fDetectorVersion = " << fDetectorVersion << " invalid (expected 0 or 1)";
-        G4Exception("DetectorConstruction::Construct", "InvalidDetectorVersion",
-                    FatalException, msg);
-    }
+        {
+            G4ExceptionDescription msg;
+            msg << "fDetectorVersion = " << fDetectorVersion << " invalid (expected 0 or 1)";
+            G4Exception("DetectorConstruction::Construct", "InvalidDetectorVersion",
+                        FatalException, msg);
+        }
 
     // Print Crystal info
     G4cout << "Crystal material: " << fCrystalMaterial->GetName() << G4endl;
@@ -267,11 +269,13 @@ G4VPhysicalVolume *DetectorConstruction::Construct()
 
 
     // --------------- virtual Detectors -----------------
-    // position
-    G4double VirtualDetector0Z = fVirtualDetectorSize.z() * 0.5;
+    // position: screen davanti alla faccia anteriore del calorimetro
+    G4double crystalFrontZ = fCrystalZ - fCrystalSize.z() * 0.5;   // faccia anteriore dei cristalli
+    G4double tollVD = 0.15 * mm;                                   // margine per cristalli ruotati
+    G4double VirtualDetector0Z = crystalFrontZ - tollVD - fVirtualDetectorSize.z() * 0.5;
     G4ThreeVector posVirtualDetector0 = G4ThreeVector(0, 0, VirtualDetector0Z);
     G4ThreeVector frontVirtualDetector0 = G4ThreeVector(0, 0, 
-                                                VirtualDetector0Z - fVirtualDetectorSize.z() * 0.5);
+                                                        VirtualDetector0Z - fVirtualDetectorSize.z() * 0.5);
     G4cout << "VirtualDetector0Z: " << VirtualDetector0Z / mm << " mm" << G4endl << G4endl;
     fVirtualDetectorPositionVector.push_back(frontVirtualDetector0);
 
@@ -310,76 +314,76 @@ void DetectorConstruction::ConstructSDandField()
 {
     // activate OC effects through FastSim model
     if (fActivateOCeffects)
-    {
-        G4RegionStore *regionStore = G4RegionStore::GetInstance();
-        G4Region *RegionCh = regionStore->GetRegion("Crystal");
-
-        G4ChannelingFastSimModel *ChannelingModel =
-            new G4ChannelingFastSimModel("ChannelingModel", RegionCh);
-
-        if (fCrystalMaterial->GetName() == "G4_W")
         {
-            ChannelingModel->Input(fCrystalLogic[0]->GetMaterial(), fLattice);
-        }
-        else
-        {
-            ChannelingModel->Input(fCrystalLogic[0]->GetMaterial(), fLattice, fPotentialPath);
-            G4cout << "fPotentialPath: " << fPotentialPath << G4endl;
-        }
-        G4double fParticleLEth = 5. * GeV; // deafult 200.*MeV (5.*GeV -> much faster)
-        G4double fLindhardAngles = 100;      // default 100
-        ChannelingModel->SetLowKineticEnergyLimit(fParticleLEth, "e-");
-        ChannelingModel->SetLowKineticEnergyLimit(fParticleLEth, "e+");
-        ChannelingModel->SetLindhardAngleNumberHighLimit(fLindhardAngles, "e-");
-        ChannelingModel->SetLindhardAngleNumberHighLimit(fLindhardAngles, "e+");
+            G4RegionStore *regionStore = G4RegionStore::GetInstance();
+            G4Region *RegionCh = regionStore->GetRegion("Crystal");
+
+            G4ChannelingFastSimModel *ChannelingModel =
+                new G4ChannelingFastSimModel("ChannelingModel", RegionCh);
+
+            if (fCrystalMaterial->GetName() == "G4_W")
+                {
+                    ChannelingModel->Input(fCrystalLogic[0]->GetMaterial(), fLattice);
+                }
+            else
+                {
+                    ChannelingModel->Input(fCrystalLogic[0]->GetMaterial(), fLattice, fPotentialPath);
+                    G4cout << "fPotentialPath: " << fPotentialPath << G4endl;
+                }
+            G4double fParticleLEth = 5. * GeV; // deafult 200.*MeV (5.*GeV -> much faster)
+            G4double fLindhardAngles = 100;      // default 100
+            ChannelingModel->SetLowKineticEnergyLimit(fParticleLEth, "e-");
+            ChannelingModel->SetLowKineticEnergyLimit(fParticleLEth, "e+");
+            ChannelingModel->SetLindhardAngleNumberHighLimit(fLindhardAngles, "e-");
+            ChannelingModel->SetLindhardAngleNumberHighLimit(fLindhardAngles, "e+");
         
-        G4double fHighAngleLimit = 0.; //rad
-        ChannelingModel->SetDefaultHighAngleLimit(fHighAngleLimit);
-        //NOTE: The actual angular cut, for each particle, is the Max of fHighAngleLimit and 
-        //the number of LindhardAngles times the corresponding Lindhard angle itself.
+            G4double fHighAngleLimit = 0.; //rad
+            ChannelingModel->SetDefaultHighAngleLimit(fHighAngleLimit);
+            //NOTE: The actual angular cut, for each particle, is the Max of fHighAngleLimit and 
+            //the number of LindhardAngles times the corresponding Lindhard angle itself.
 
-        G4cout << G4endl;
-        G4cout << "Oriented Crystal effects set through FastSim model" << G4endl;
-        //G4cout << "Crystal Lattice: " << fLattice << G4endl;
-        G4cout << "Crystal AngleX: " << fAngleX << " rad" << G4endl;
-        G4cout << "Crystal AngleY: " << fAngleY << " rad" << G4endl;
-        G4cout << "fParticleLEth: " << fParticleLEth / MeV << " MeV" << G4endl;
-        G4cout << "fLindhardAngles: " << fLindhardAngles << G4endl;
-        G4cout << "fHighAngleLimit: " << fHighAngleLimit*1e3 << " mrad" << G4endl;
-        G4cout << "ActivateRadiationModel: " << fActivateRadiationModel << G4endl;
-
-        if (fActivateRadiationModel)
-        {
-            ChannelingModel->RadiationModelActivate();
-            G4int fSamplingPhotonsNumber = 150;        // default 150
-            G4int fNSmallTrajectorySteps = 10000;      // default 10000
-            G4double fRadiactionAngleFactor = 4.;      // deafult 4
-            G4double fSinglePhotonRadProbLimit = 0.25; // default 0.25
-            G4double fLEthreshold = 1. * MeV;
-            ChannelingModel->GetRadiationModel()->SetSamplingPhotonsNumber(fSamplingPhotonsNumber);
-            ChannelingModel->GetRadiationModel()->SetNSmallTrajectorySteps(fNSmallTrajectorySteps);
-            ChannelingModel->GetRadiationModel()->SetRadiationAngleFactor(fRadiactionAngleFactor);
-            ChannelingModel->GetRadiationModel()
-                ->SetSinglePhotonRadiationProbabilityLimit(fSinglePhotonRadProbLimit);
-            ChannelingModel->GetRadiationModel()
-                ->SetSpectrumEnergyRange(fLEthreshold, 20. * GeV, 100);
-
-            G4cout << "SamplingPhotonsNumber: "
-                   << fSamplingPhotonsNumber << G4endl;
-            G4cout << "NSmallTrajectorySteps: "
-                   << fNSmallTrajectorySteps << G4endl;
-            G4cout << "fRadiactionAngleFactor: "
-                   << fRadiactionAngleFactor << G4endl;
-            G4cout << "fSinglePhotonRadProbLimit: "
-                   << fSinglePhotonRadProbLimit << G4endl;
-            G4cout << "Low Eenergy threshold to emit photons and record their energy: "
-                   << fLEthreshold / MeV << " MeV" << G4endl << G4endl;
-        }
-        else
-        {
             G4cout << G4endl;
+            G4cout << "Oriented Crystal effects set through FastSim model" << G4endl;
+            //G4cout << "Crystal Lattice: " << fLattice << G4endl;
+            G4cout << "Crystal AngleX: " << fAngleX << " rad" << G4endl;
+            G4cout << "Crystal AngleY: " << fAngleY << " rad" << G4endl;
+            G4cout << "fParticleLEth: " << fParticleLEth / MeV << " MeV" << G4endl;
+            G4cout << "fLindhardAngles: " << fLindhardAngles << G4endl;
+            G4cout << "fHighAngleLimit: " << fHighAngleLimit*1e3 << " mrad" << G4endl;
+            G4cout << "ActivateRadiationModel: " << fActivateRadiationModel << G4endl;
+
+            if (fActivateRadiationModel)
+                {
+                    ChannelingModel->RadiationModelActivate();
+                    G4int fSamplingPhotonsNumber = 150;        // default 150
+                    G4int fNSmallTrajectorySteps = 10000;      // default 10000
+                    G4double fRadiactionAngleFactor = 4.;      // deafult 4
+                    G4double fSinglePhotonRadProbLimit = 0.25; // default 0.25
+                    G4double fLEthreshold = 1. * MeV;
+                    ChannelingModel->GetRadiationModel()->SetSamplingPhotonsNumber(fSamplingPhotonsNumber);
+                    ChannelingModel->GetRadiationModel()->SetNSmallTrajectorySteps(fNSmallTrajectorySteps);
+                    ChannelingModel->GetRadiationModel()->SetRadiationAngleFactor(fRadiactionAngleFactor);
+                    ChannelingModel->GetRadiationModel()
+                        ->SetSinglePhotonRadiationProbabilityLimit(fSinglePhotonRadProbLimit);
+                    ChannelingModel->GetRadiationModel()
+                        ->SetSpectrumEnergyRange(fLEthreshold, 20. * GeV, 100);
+
+                    G4cout << "SamplingPhotonsNumber: "
+                           << fSamplingPhotonsNumber << G4endl;
+                    G4cout << "NSmallTrajectorySteps: "
+                           << fNSmallTrajectorySteps << G4endl;
+                    G4cout << "fRadiactionAngleFactor: "
+                           << fRadiactionAngleFactor << G4endl;
+                    G4cout << "fSinglePhotonRadProbLimit: "
+                           << fSinglePhotonRadProbLimit << G4endl;
+                    G4cout << "Low Eenergy threshold to emit photons and record their energy: "
+                           << fLEthreshold / MeV << " MeV" << G4endl << G4endl;
+                }
+            else
+                {
+                    G4cout << G4endl;
+                }
         }
-    }
 
 
     // Sensitive Volumes (Virtual Detectors)

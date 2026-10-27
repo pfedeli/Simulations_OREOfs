@@ -76,6 +76,8 @@ RunAction::RunAction():G4UserRunAction()
     fAnalysisManager->CreateNtupleDColumn("px");
     fAnalysisManager->CreateNtupleDColumn("py");
     fAnalysisManager->CreateNtupleDColumn("pz");
+    fAnalysisManager->CreateNtupleDColumn("theta");
+    fAnalysisManager->CreateNtupleDColumn("phi");
     fAnalysisManager->CreateNtupleDColumn("E");
     fAnalysisManager->CreateNtupleDColumn("t");
     fAnalysisManager->CreateNtupleIColumn("parentID");

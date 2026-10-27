@@ -60,9 +60,9 @@ void EventAction::BeginOfEventAction(const G4Event *)
 {
     // reset Edep in the Crystals
     for (G4int i = 0; i < fNCrystals; i++)
-    {
-        fEdep[i] = 0.;
-    }
+        {
+            fEdep[i] = 0.;
+        }
     fEtot = 0.;
 }
 
@@ -75,26 +75,26 @@ void EventAction::EndOfEventAction(const G4Event *aEvent)
 
     // Hit Detection System
     if (fSensitiveDetector_ID == -1)
-    {
-        G4String SensitiveDetectorName;
-        if (SDman->FindSensitiveDetector(SensitiveDetectorName = "det", 0))
         {
-            fSensitiveDetector_ID =
-                SDman->GetCollectionID(SensitiveDetectorName = "det/collection");
+            G4String SensitiveDetectorName;
+            if (SDman->FindSensitiveDetector(SensitiveDetectorName = "det", 0))
+                {
+                    fSensitiveDetector_ID =
+                        SDman->GetCollectionID(SensitiveDetectorName = "det/collection");
+                }
         }
-    }
 
     SensitiveDetectorHitsCollection *sensitiveDetectorHC = 0;
     G4HCofThisEvent *HCE = aEvent->GetHCofThisEvent();
 
     if (HCE)
-    {
-        if (fSensitiveDetector_ID != -1)
         {
-            G4VHitsCollection *aHC = HCE->GetHC(fSensitiveDetector_ID);
-            sensitiveDetectorHC = (SensitiveDetectorHitsCollection *)(aHC);
+            if (fSensitiveDetector_ID != -1)
+                {
+                    G4VHitsCollection *aHC = HCE->GetHC(fSensitiveDetector_ID);
+                    sensitiveDetectorHC = (SensitiveDetectorHitsCollection *)(aHC);
+                }
         }
-    }
 
     // instantiating The Analysis Manager
     G4AnalysisManager *analysisManager = G4AnalysisManager::Instance();
@@ -104,35 +104,42 @@ void EventAction::EndOfEventAction(const G4Event *aEvent)
 
     // filling the SD scoring ntuple
     if (sensitiveDetectorHC)
-    {
-        int vNumberOfHit = sensitiveDetectorHC->entries();
-        for (int i = 0; i < vNumberOfHit; i++)
         {
-            SensitiveDetectorHit *aHit = (*sensitiveDetectorHC)[i];
-            analysisManager->FillNtupleIColumn(0, 0, aHit->GetDetID());
-            analysisManager->FillNtupleSColumn(0, 1, aHit->GetParticle());
-            analysisManager->FillNtupleDColumn(0, 2, aHit->GetPos().x() / CLHEP::mm);
-            analysisManager->FillNtupleDColumn(0, 3, aHit->GetPos().y() / CLHEP::mm);
-            analysisManager->FillNtupleDColumn(0, 4, aHit->GetMom().x() / CLHEP::GeV);
-            analysisManager->FillNtupleDColumn(0, 5, aHit->GetMom().y() / CLHEP::GeV);
-            analysisManager->FillNtupleDColumn(0, 6, aHit->GetMom().z() / CLHEP::GeV);
-            analysisManager->FillNtupleDColumn(0, 7, aHit->GetEnergy() / CLHEP::GeV);
-            analysisManager->FillNtupleDColumn(0, 8, aHit->GetTime() / CLHEP::ns);
-            analysisManager->FillNtupleIColumn(0, 9, aHit->GetTrackIDP());
-            analysisManager->FillNtupleIColumn(0, 10, eventID);
-            analysisManager->AddNtupleRow(0);
+            int vNumberOfHit = sensitiveDetectorHC->entries();
+            for (int i = 0; i < vNumberOfHit; i++)
+                {
+                    SensitiveDetectorHit *aHit = (*sensitiveDetectorHC)[i];
+
+                    if(aHit->GetTrackID() == 1){
+    
+                        analysisManager->FillNtupleIColumn(0, 0, aHit->GetDetID());
+                        analysisManager->FillNtupleSColumn(0, 1, aHit->GetParticle());
+                        analysisManager->FillNtupleDColumn(0, 2, aHit->GetPos().x() / CLHEP::mm);
+                        analysisManager->FillNtupleDColumn(0, 3, aHit->GetPos().y() / CLHEP::mm);
+                        analysisManager->FillNtupleDColumn(0, 4, aHit->GetMom().x() / CLHEP::GeV);
+                        analysisManager->FillNtupleDColumn(0, 5, aHit->GetMom().y() / CLHEP::GeV);
+                        analysisManager->FillNtupleDColumn(0, 6, aHit->GetMom().z() / CLHEP::GeV);
+                        analysisManager->FillNtupleDColumn(0, 7, aHit->GetMom().theta() / CLHEP::mrad);
+                        analysisManager->FillNtupleDColumn(0, 8, aHit->GetMom().phi() / CLHEP::mrad);
+                        analysisManager->FillNtupleDColumn(0, 9, aHit->GetEnergy() / CLHEP::GeV);
+                        analysisManager->FillNtupleDColumn(0, 10, aHit->GetTime() / CLHEP::ns);
+                        analysisManager->FillNtupleIColumn(0, 11, aHit->GetTrackIDP());
+                        analysisManager->FillNtupleIColumn(0, 12, eventID);
+                        analysisManager->AddNtupleRow(0);
+
+                    }
+                }
         }
-    }
 
     // filling the Edep (in the OREO Crystal) ntuple
     for (G4int icry = 0; icry < fNCrystals; icry++)
-    {
-        if (fEdep[icry] > 0)
         {
-            analysisManager->FillNtupleDColumn(1, icry, fEdep[icry]/GeV);
-            fEtot += fEdep[icry]/GeV;
-        }
-    }    
+            if (fEdep[icry] > 0)
+                {
+                    analysisManager->FillNtupleDColumn(1, icry, fEdep[icry]/GeV);
+                    fEtot += fEdep[icry]/GeV;
+                }
+        }    
     analysisManager->FillNtupleDColumn(1, fNCrystals, fEtot);
     analysisManager->FillNtupleIColumn(1, fNCrystals+1, eventID);
     analysisManager->AddNtupleRow(1);
