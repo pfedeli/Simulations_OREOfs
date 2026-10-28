@@ -92,6 +92,7 @@
 
 //for OC physics
 #include "G4RegionStore.hh"
+#include "G4Region.hh"
 #include "G4FastSimulationPhysics.hh"
 #include "G4CoherentPairProductionPhysics.hh"
 
@@ -113,7 +114,7 @@ PhysicsList::PhysicsList(G4int verb)
     fDefaultPhysicsList->ReplacePhysics(new G4EmLivermorePhysics());
     G4cout << "FTFP_BERT activated in all volumes" << G4endl; 
     G4cout << "replace EM physics with G4EmLivermorePhysics" << G4endl;
-    
+
     //set OC Physics with FS model
     ActivateOCprocessesWithFSmodel();
 }
@@ -144,6 +145,22 @@ void PhysicsList::ConstructProcess()
 
     //Set Default physics from a ModularPhysicsList (it includes transportation)
     fDefaultPhysicsList->ConstructProcess();
+
+    //Coherent pair production: needs the G4ChannelingFastSimModel ("ChannelingModel")
+    //in the region "Crystal", i.e. /crystal/setOCeffects true
+    if (fCoherentPairProduction) {
+        G4Region* region = G4RegionStore::GetInstance()->GetRegion("Crystal", false);
+        if (region != nullptr && region->GetFastSimulationManager() != nullptr) {
+            auto* cpp = new G4CoherentPairProductionPhysics();
+            cpp->SetNameG4Region("Crystal");
+            cpp->ConstructProcess();
+            G4cout << "G4CoherentPairProduction attached to gamma in region Crystal" << G4endl;
+        } else {
+            G4Exception("PhysicsList::ConstructProcess()", "OREO_CPP01", JustWarning,
+                        "Coherent pair production requires /crystal/setOCeffects true "
+                        "(no ChannelingModel in region Crystal): NOT activated.");
+        }
+    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -167,7 +184,9 @@ void PhysicsList::SetCuts() //called automatically
 
 void PhysicsList::ActivateCoherentPairProduction()
 {
+    //the process is built in ConstructProcess(), only if the ChannelingModel exists
     fCoherentPairProduction = true;
+    G4cout << "Coherent pair production requested (region Crystal)" << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -193,17 +212,6 @@ void PhysicsList::ActivateOCprocessesWithFSmodel()
 
     G4cout << "PhysicsList::ActivateOCprocessesWithFSmodel()" << G4endl;
 
-    //Coherent pair production model (new: September 2024, to test!)
-    if (fCoherentPairProduction) {
-        G4CoherentPairProductionPhysics* coherentPairProductionPhysics =
-            new G4CoherentPairProductionPhysics();
-        G4String crystal_region = "Crystal";
-        coherentPairProductionPhysics->SetNameG4Region(crystal_region);
-        fDefaultPhysicsList->RegisterPhysics(coherentPairProductionPhysics);
-
-        G4cout << "G4CoherentPairProductionPhysics activated in " 
-               << crystal_region << "!" <<G4endl;
-    }
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
