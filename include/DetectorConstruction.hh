@@ -81,7 +81,10 @@ public:
     void SetCrystalGap(const G4double val){fCrystalGap = val;}
     void SetnCrystalsX(const G4int val){nCrystalsX = val;}
     void SetnCrystalsY(const G4int val){nCrystalsY = val;}
-       
+    void SetFSLowEnergyLimit(G4double val) {fParticleLEth = val;}       
+    void SetFSLindhardAngles(G4double val) {fLindhardAngles = val;}     
+    void SetFSHighAngleLimit(G4double val) {fHighAngleLimit = val;}
+    
     //methods to set/Get the Virtual Detector features
     void SetVirtualDetectorSize(G4ThreeVector val) {fVirtualDetectorSize = val;}
     std::vector<G4ThreeVector> GetVirtualDetectorPositionVector() const {
@@ -110,7 +113,10 @@ private:
     G4double fCrystalGap = 0.1*mm;
     G4int nCrystalsX = 3;
     G4int nCrystalsY = 3;
-
+    G4double fParticleLEth = 5.*GeV;
+    G4double fLindhardAngles = 100.;   
+    G4double fHighAngleLimit = 0.;      
+    
     G4ThreeVector fVirtualDetectorSize = G4ThreeVector(40.*cm, 40.*cm, 0.01*mm);
     std::vector<G4ThreeVector> fVirtualDetectorPositionVector;
     G4LogicalVolume* fVirtualDetectorLogic0{nullptr};

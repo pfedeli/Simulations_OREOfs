@@ -330,14 +330,13 @@ void DetectorConstruction::ConstructSDandField()
                     ChannelingModel->Input(fCrystalLogic[0]->GetMaterial(), fLattice, fPotentialPath);
                     G4cout << "fPotentialPath: " << fPotentialPath << G4endl;
                 }
-            G4double fParticleLEth = 5. * GeV; // deafult 200.*MeV (5.*GeV -> much faster)
-            G4double fLindhardAngles = 100;      // default 100
+
+            
             ChannelingModel->SetLowKineticEnergyLimit(fParticleLEth, "e-");
             ChannelingModel->SetLowKineticEnergyLimit(fParticleLEth, "e+");
             ChannelingModel->SetLindhardAngleNumberHighLimit(fLindhardAngles, "e-");
             ChannelingModel->SetLindhardAngleNumberHighLimit(fLindhardAngles, "e+");
         
-            G4double fHighAngleLimit = 0.; //rad
             ChannelingModel->SetDefaultHighAngleLimit(fHighAngleLimit);
             //NOTE: The actual angular cut, for each particle, is the Max of fHighAngleLimit and 
             //the number of LindhardAngles times the corresponding Lindhard angle itself.

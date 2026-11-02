@@ -1,25 +1,31 @@
-/run/numberOfThreads 40
+/run/numberOfThreads 1
 
-#/random/setSeeds 19577793 424238335        #uncomment this to have reproducibility
+/random/setSeeds 19577793 424238335        #uncomment this to have reproducibility
 
 #geometry
 /crystal/setDetectorVersion 1               #0 for single crystal, 1 is oreo
 /crystal/nCrystalsX 3                       #max 7
 /crystal/nCrystalsY 3
-/crystal/setCrystalMaterial W             #W, PWO
+/crystal/setCrystalMaterial PWO             #W, PWO
 /crystal/setCrystalSize 25 25 45 mm
-/crystal/setCrystalLattice <111>            #planes (e.g. (111)) or axes (e.g. <111>)
+/crystal/setCrystalLattice <100>            #planes (e.g. (111)) or axes (e.g. <111>)
 /crystal/setCrystalAngleX 0.e-6             #rad (default 0.)
 /crystal/setCrystalAngleY 0.e-6             #rad (default 0.)
-#/crystal/setOCeffects false                  #default is true
+/crystal/setOCeffects true                 #default is true
 /crystal/setChannelingDataPath ../potentialPath/
 
 #/crystal/setVirtualDetectorSize 40 40 0.001 cm
 
+
+/crystal/setFSLowEnergyLimit 10 GeV
+/crystal/setFSLindhardAngles 100
+
 #physics and run options
 /phys/setCoherentPairProduction
-
-/run/setfilenamesave output/ax.root
+/phys/setOCprocessesWithFSmodel  
+#/phys/setMatAxis4SFCorections 2
+#/phys/setOCprocessesWithModCS   
+/run/setfilenamesave output/fs20.root
 
 /run/initialize
 
@@ -41,12 +47,12 @@
 /gps/ang/sigma_x 100.E-6 rad
 /gps/ang/sigma_y 100.E-6 rad
 #energy distribution
-/gps/ene/mono 50 GeV
+/gps/ene/mono 100 GeV
 
 #mesh scorer
 /score/create/boxMesh boxMesh1
-/score/mesh/boxSize 37.5 37.5 22.5 mm       #semi-quantities
-/score/mesh/nBin 75 75 45
+/score/mesh/boxSize 38 38 22.5 mm       #semi-quantities
+/score/mesh/nBin 76 76 45
 /score/mesh/translate/xyz 0 0 -22.5 mm
 /score/quantity/energyDeposit Edep GeV      #[GeV]
 /score/close
@@ -59,3 +65,6 @@
 #write boxMesh scorer reults to file
 #/score/dumpQuantityToFile boxMesh1 Edep output/Edep_axial_50GeV.txt
 #/score/dumpQuantityToFile boxMesh1 Edep output/Edep_random_50GeV.txt
+
+#coding of Matrial_Axis to use for old SF corrections (OC effects) in crystals
+#0=PWO, 1=W111, 2=PWO_001, 3=W111_electron, 4=W111_positron, 5=W111_3mrad_electron, 6=W111_3mrad_positron

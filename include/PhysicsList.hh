@@ -55,9 +55,15 @@ public:
     void SetCuts() override;
 
     //custom methods
+    void ActivateOCprocessesWithModCS();
     void ActivateOCprocessesWithFSmodel();
     void ActivateCoherentPairProduction();
 
+    void SetMatAxis4SFCorrections(G4int val) {
+        fMatID = val;
+        //G4cout << "Set SF corrections for Mat/Axis ID: " << fMatID << G4endl;
+    }
+    
 private:
     PhysicsList & operator = (const PhysicsList &right);
     PhysicsList(const PhysicsList&);
@@ -66,7 +72,11 @@ private:
 
     G4GenericMessenger* fMessenger{nullptr};
     void DefineCommands();
-    
+
+    G4int fMatID = 0;
+
+    G4bool fOCprocessesWithFSmodel = false;
+    G4bool fOCprocessesWithModCS = false;
     G4bool fCoherentPairProduction = false;
 };
 

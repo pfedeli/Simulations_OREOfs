@@ -32,6 +32,7 @@
 
 //header of the class
 #include "PhysicsList.hh"
+#include "EmStandardPhysics.hh"
 
 //other classes
 #include "G4UnitsTable.hh"
@@ -116,7 +117,7 @@ PhysicsList::PhysicsList(G4int verb)
     G4cout << "replace EM physics with G4EmLivermorePhysics" << G4endl;
 
     //set OC Physics with FS model
-    ActivateOCprocessesWithFSmodel();
+    //ActivateOCprocessesWithFSmodel();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -172,7 +173,7 @@ void PhysicsList::SetCuts() //called automatically
     if (verboseLevel > 0) {
         G4cout << "called PhysicsList::SetCuts()" << G4endl;  
         G4cout << "Cuts set in the whole world: " 
-             << defaultCutValue/mm << " mm" << G4endl << G4endl;
+               << defaultCutValue/mm << " mm" << G4endl << G4endl;
     }
 
     G4VUserPhysicsList::SetCuts();
@@ -181,6 +182,21 @@ void PhysicsList::SetCuts() //called automatically
 }  
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
+void PhysicsList::ActivateOCprocessesWithModCS()
+{
+    if (fOCprocessesWithFSmodel) {
+        G4Exception("PhysicsList::ActivateOCprocessesWithModCS()", "OREO002", 
+                    FatalException, "FSmodel already activated, cannot use ModCS too. Exiting.");
+        return;
+    }
+    
+     
+    //EmStandardPhysics contains OC physics obtained with modification of CS
+    fDefaultPhysicsList->ReplacePhysics(new EmStandardPhysics(verboseLevel, 
+                                                              "", fMatID));
+    fOCprocessesWithModCS = true;                                                          
+}  
 
 void PhysicsList::ActivateCoherentPairProduction()
 {
@@ -193,6 +209,11 @@ void PhysicsList::ActivateCoherentPairProduction()
 
 void PhysicsList::ActivateOCprocessesWithFSmodel()
 {
+    if (fOCprocessesWithModCS) {
+        G4Exception("PhysicsList::ActivateOCprocessesWithFSmodel()", "OREO003", 
+                    FatalException, "ModCS already activated, cannot use FSmodel too. Exiting.");
+        return;
+    }
     //Create a helper tool used to activate the FastSimulation
     G4FastSimulationPhysics* fastSimulationPhysics = new G4FastSimulationPhysics();
     fastSimulationPhysics->BeVerbose();
@@ -211,6 +232,7 @@ void PhysicsList::ActivateOCprocessesWithFSmodel()
     fDefaultPhysicsList->RegisterPhysics(fastSimulationPhysics);
 
     G4cout << "PhysicsList::ActivateOCprocessesWithFSmodel()" << G4endl;
+    fOCprocessesWithFSmodel = true;
 
 }  
 
@@ -224,14 +246,21 @@ void PhysicsList::DefineCommands()
                                         "PhysicsList control");
 
     //Commands
+    fMessenger->DeclareMethod("setOCprocessesWithModCS",
+                              &PhysicsList::ActivateOCprocessesWithModCS,
+                              "Set physics of Oriented Crystals (OC) through modified CS.");                               
 
+    fMessenger->DeclareMethodWithUnit("setMatAxis4SFCorections","rad",
+                                      &PhysicsList::SetMatAxis4SFCorrections,
+                                      "Set index of material/axis for SF corrections.");
+    
     fMessenger->DeclareMethod("setOCprocessesWithFSmodel",
                               &PhysicsList::ActivateOCprocessesWithFSmodel,
-           "Activate physics of Oriented Crystals (OC) through FasSimModel.");
+                              "Activate physics of Oriented Crystals (OC) through FasSimModel.");
 
     fMessenger->DeclareMethod("setCoherentPairProduction",
                               &PhysicsList::ActivateCoherentPairProduction,
-                "Activate Coherent pair production. It require FasSimModel.");
+                              "Activate Coherent pair production. It require FasSimModel.");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

@@ -75,6 +75,9 @@ private:
     G4UIcmdWithADoubleAndUnit* fGapCmd{nullptr};
     G4UIcmdWithAnInteger* fnCrystalsX{nullptr};
     G4UIcmdWithAnInteger* fnCrystalsY{nullptr};
+    G4UIcmdWithADoubleAndUnit* fFSLowEnergyCmd{nullptr};    
+    G4UIcmdWithADouble* fFSLindhardCmd{nullptr};            
+    G4UIcmdWithADoubleAndUnit* fFSHighAngleCmd{nullptr};
     
     G4UIcmdWith3VectorAndUnit* fVirtualDetectorSizeCmd{nullptr}; 
 };

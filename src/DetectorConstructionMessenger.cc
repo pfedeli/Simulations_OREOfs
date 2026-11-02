@@ -47,7 +47,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 DetectorConstructionMessenger::DetectorConstructionMessenger(DetectorConstruction* det):
-fDetector(det)
+    fDetector(det)
 {
     fCmdDir = new G4UIdirectory("/crystal/");
     fCmdDir->SetGuidance("crystal Control"); 
@@ -89,9 +89,9 @@ fDetector(det)
     
     fPotentialPathCmd = new G4UIcmdWithAString("/crystal/setChannelingDataPath",this);
     fPotentialPathCmd->
-            SetGuidance("Set the path where to find the available data "
-                        "for the G4ChannelingFastSimModel "
-                        "if different from G4CHANNELINGDATA");
+        SetGuidance("Set the path where to find the available data "
+                    "for the G4ChannelingFastSimModel "
+                    "if different from G4CHANNELINGDATA");
     fPotentialPathCmd->SetParameterName("channelingDataPath",false);
     fPotentialPathCmd->SetDefaultValue("");
     
@@ -118,6 +118,22 @@ fDetector(det)
     fnCrystalsY->SetParameterName("ncy",false);   
     fnCrystalsY->SetRange("ncy>=1 && ncy<=7");
  
+    fFSLowEnergyCmd = new G4UIcmdWithADoubleAndUnit("/crystal/setFSLowEnergyLimit",this);
+    fFSLowEnergyCmd->SetGuidance("Min kinetic energy of e+/e- for the FastSim model");
+    fFSLowEnergyCmd->SetParameterName("ekin",false);
+    fFSLowEnergyCmd->SetUnitCategory("Energy");
+    fFSLowEnergyCmd->AvailableForStates(G4State_PreInit);
+
+    fFSLindhardCmd = new G4UIcmdWithADouble("/crystal/setFSLindhardAngles",this);         
+    fFSLindhardCmd->SetGuidance("Max angle of e+/e- for the FastSim model, in Lindhard angles");
+    fFSLindhardCmd->SetParameterName("nLind",false);
+    fFSLindhardCmd->AvailableForStates(G4State_PreInit);
+
+    fFSHighAngleCmd = new G4UIcmdWithADoubleAndUnit("/crystal/setFSHighAngleLimit",this); 
+    fFSHighAngleCmd->SetGuidance("Absolute max angle for the FastSim model");
+    fFSHighAngleCmd->SetParameterName("angmax",false);
+    fFSHighAngleCmd->SetUnitCategory("Angle");
+    fFSHighAngleCmd->AvailableForStates(G4State_PreInit);
     
     fVirtualDetectorSizeCmd = 
         new G4UIcmdWith3VectorAndUnit("/crystal/setVirtualDetectorSize",this);
@@ -145,6 +161,9 @@ DetectorConstructionMessenger::~DetectorConstructionMessenger()
     delete fGapCmd;
     delete fnCrystalsX;
     delete fnCrystalsY;
+    delete fFSLowEnergyCmd;    
+    delete fFSLindhardCmd;      
+    delete fFSHighAngleCmd;
     
     delete fVirtualDetectorSizeCmd; 
 }
@@ -178,10 +197,18 @@ void DetectorConstructionMessenger::SetNewValue(G4UIcommand* command, G4String n
         {fDetector->SetnCrystalsX(fnCrystalsX->GetNewIntValue(newValue));}
     if (command == fnCrystalsY)
         {fDetector->SetnCrystalsY(fnCrystalsY->GetNewIntValue(newValue));}
-                
+
+    if (command == fFSLowEnergyCmd)                                                        
+        {fDetector->SetFSLowEnergyLimit(fFSLowEnergyCmd->GetNewDoubleValue(newValue));}    
+    if (command == fFSLindhardCmd)                                                         
+        {fDetector->SetFSLindhardAngles(fFSLindhardCmd->GetNewDoubleValue(newValue));}     
+    if (command == fFSHighAngleCmd)                                                        
+        {fDetector->SetFSHighAngleLimit(fFSHighAngleCmd->GetNewDoubleValue(newValue));}   
+               
+    
     if (command == fVirtualDetectorSizeCmd) 
         {fDetector->
-            SetVirtualDetectorSize(fVirtualDetectorSizeCmd->GetNew3VectorValue(newValue));}           
+                SetVirtualDetectorSize(fVirtualDetectorSizeCmd->GetNew3VectorValue(newValue));}           
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
