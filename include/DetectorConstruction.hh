@@ -115,7 +115,7 @@ private:
     G4int nCrystalsY = 3;
     G4double fParticleLEth = 5.*GeV;
     G4double fLindhardAngles = 100.;   
-    G4double fHighAngleLimit = 0.;      
+    G4double fHighAngleLimit = 30.e-3;     
     
     G4ThreeVector fVirtualDetectorSize = G4ThreeVector(40.*cm, 40.*cm, 0.01*mm);
     std::vector<G4ThreeVector> fVirtualDetectorPositionVector;

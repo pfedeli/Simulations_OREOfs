@@ -220,13 +220,13 @@ void PhysicsList::ActivateOCprocessesWithFSmodel()
     //Activate FastSimulation for particles having FastSimulation models
     fastSimulationPhysics->ActivateFastSimulation("e-");
     fastSimulationPhysics->ActivateFastSimulation("e+");
-    fastSimulationPhysics->ActivateFastSimulation("pi-");
-    fastSimulationPhysics->ActivateFastSimulation("pi+");
-    fastSimulationPhysics->ActivateFastSimulation("mu-");
-    fastSimulationPhysics->ActivateFastSimulation("mu+");
-    fastSimulationPhysics->ActivateFastSimulation("proton");
-    fastSimulationPhysics->ActivateFastSimulation("anti_proton");
-    fastSimulationPhysics->ActivateFastSimulation("GenericIon");
+    //fastSimulationPhysics->ActivateFastSimulation("pi-");
+    //fastSimulationPhysics->ActivateFastSimulation("pi+");
+    //fastSimulationPhysics->ActivateFastSimulation("mu-");
+    //fastSimulationPhysics->ActivateFastSimulation("mu+");
+    //fastSimulationPhysics->ActivateFastSimulation("proton");
+    //fastSimulationPhysics->ActivateFastSimulation("anti_proton");
+    //fastSimulationPhysics->ActivateFastSimulation("GenericIon");
 
     //Attach the FastSimulation constructor to the physics list
     fDefaultPhysicsList->RegisterPhysics(fastSimulationPhysics);
